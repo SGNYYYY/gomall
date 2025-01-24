@@ -2,22 +2,13 @@ syntax = "proto3";
 
 package frontend.home;
 
+import "api.proto";
+import "frontend/common.proto";
+
 option go_package = "frontend/home";
 
-import "api.proto";
-
-message HelloReq {
-   string Name = 1[(api.query)="name"];
-}
-
-message HelloResp {
-   string RespBody = 1;
-}
-
-message Emtpy {}
-
 service HomeService {
-   rpc Home(Emtpy) returns(Emtpy) {
+   rpc Home(common.Empty) returns(common.Empty) {
       option (api.get) = "/";
    }
 }
