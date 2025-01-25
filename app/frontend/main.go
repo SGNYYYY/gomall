@@ -9,6 +9,7 @@ import (
 
 	"github.com/SGNYYYY/gomall/app/frontend/biz/router"
 	"github.com/SGNYYYY/gomall/app/frontend/conf"
+	"github.com/SGNYYYY/gomall/app/frontend/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -45,12 +46,20 @@ func main() {
 	h.LoadHTMLGlob("template/*")
 	h.Static("/static", "./")
 
-	h.GET("/sign-in", func(c context.Context, ctx *app.RequestContext) {
-		ctx.HTML(consts.StatusOK, "sign-in", utils.H{"Title": "Sign In"})
+	h.GET("/sign-in", func(ctx context.Context, c *app.RequestContext) {
+		data := utils.H{
+			"Title": "Sign In",
+			"Next":  string(c.GetHeader("Referer")),
+		}
+		c.HTML(consts.StatusOK, "sign-in", data)
 	})
 
-	h.GET("/sign-up", func(c context.Context, ctx *app.RequestContext) {
-		ctx.HTML(consts.StatusOK, "sign-up", utils.H{"Title": "Sign Up"})
+	h.GET("/sign-up", func(ctx context.Context, c *app.RequestContext) {
+		c.HTML(consts.StatusOK, "sign-up", utils.H{"Title": "Sign Up"})
+	})
+
+	h.GET("/about", func(ctx context.Context, c *app.RequestContext) {
+		c.HTML(consts.StatusOK, "about", utils.H{"Title": "About"})
 	})
 
 	h.Spin()
@@ -98,4 +107,6 @@ func registerMiddleware(h *server.Hertz) {
 
 	// cores
 	h.Use(cors.Default())
+
+	middleware.Register(h)
 }
