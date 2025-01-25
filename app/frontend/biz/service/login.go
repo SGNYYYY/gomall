@@ -6,6 +6,7 @@ import (
 	auth "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/auth"
 	common "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/common"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/hertz-contrib/sessions"
 )
 
 type LoginService struct {
@@ -22,6 +23,12 @@ func (h *LoginService) Run(req *auth.LoginReq) (resp *common.Empty, err error) {
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
 	//}()
-	// todo edit your code
+	// TODO User SVC API
+	session := sessions.Default(h.RequestContext)
+	session.Set("user_id", 1)
+	err = session.Save()
+	if err != nil {
+		return nil, err
+	}
 	return
 }
