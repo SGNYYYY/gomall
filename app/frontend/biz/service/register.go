@@ -5,6 +5,8 @@ import (
 
 	auth "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/auth"
 	common "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/common"
+	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
+	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/user"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/sessions"
 )
@@ -23,9 +25,16 @@ func (h *RegisterService) Run(req *auth.RegisterReq) (resp *common.Empty, err er
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
 	//}()
-	// TODO user svc api
+	registerResp, err := rpc.UserClient.Register(h.Context, &user.RegisterReq{
+		Email:           req.Email,
+		Password:        req.Password,
+		ConfirmPassword: req.ConfirmPassword,
+	})
+	if err != nil {
+		return nil, err
+	}
 	session := sessions.Default(h.RequestContext)
-	session.Set("user_id", 1)
+	session.Set("user_id", registerResp.UserId)
 	err = session.Save()
 	if err != nil {
 		return nil, err

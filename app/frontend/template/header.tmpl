@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{$.Title}} | GoMall</title>
+  <title>GO Shop</title>
   <link href="/static/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <script src="https://kit.fontawesome.com/85ad84cf3e.js" crossorigin="anonymous"></script>
@@ -16,7 +16,7 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container">
         <a class="navbar-brand" href="/">
-          <img class="navbar-brand" src="/static/image/logo.png" alt="GOMall" style="height: 3em;" />
+          <img class="navbar-brand" src="/static/image/logo.png" alt="GOMall" style="height: 3em;" /> GO Shop
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +24,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">Home</a>
-            </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -82,4 +79,5 @@
 
   <main style="min-height: calc(80vh)">
     <div class="container-fluid py-3">
+      <h1 class="text-center">{{ $.title }}</h1>
       {{ end }}

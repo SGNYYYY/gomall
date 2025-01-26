@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/SGNYYYY/gomall/app/frontend/utils"
+	frontendUtils "github.com/SGNYYYY/gomall/app/frontend/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/sessions"
 )
@@ -17,7 +17,7 @@ func GlobalAuth() app.HandlerFunc {
 			c.Next(ctx)
 			return
 		}
-		ctx = context.WithValue(ctx, utils.UserIdKey, userId)
+		ctx = context.WithValue(ctx, frontendUtils.UserIdKey, userId)
 		c.Next(ctx)
 	}
 }
@@ -31,7 +31,7 @@ func Auth() app.HandlerFunc {
 			ref := string(byteRef)
 			next := "/sign-in"
 			if ref != "" {
-				if utils.ValidateNext(ref) {
+				if frontendUtils.ValidateNext(ref) {
 					next = fmt.Sprintf("%s?next=%s", next, ref)
 				}
 			}
@@ -40,7 +40,7 @@ func Auth() app.HandlerFunc {
 			c.Next(ctx)
 			return
 		}
-		ctx = context.WithValue(ctx, utils.UserIdKey, userId)
+		ctx = context.WithValue(ctx, frontendUtils.UserIdKey, userId)
 		c.Next(ctx)
 	}
 }

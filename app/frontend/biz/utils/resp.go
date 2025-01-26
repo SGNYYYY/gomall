@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 
-	"github.com/SGNYYYY/gomall/app/frontend/utils"
+	frontendUtils "github.com/SGNYYYY/gomall/app/frontend/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -20,6 +20,6 @@ func SendSuccessResponse(ctx context.Context, c *app.RequestContext, code int, d
 }
 
 func WrapResponse(ctx context.Context, c *app.RequestContext, content map[string]any) map[string]any {
-	content["user_id"] = ctx.Value(utils.UserIdKey)
+	content["user_id"] = ctx.Value(frontendUtils.UserIdKey)
 	return content
 }

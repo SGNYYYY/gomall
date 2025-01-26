@@ -9,6 +9,7 @@ import (
 
 	"github.com/SGNYYYY/gomall/app/frontend/biz/router"
 	"github.com/SGNYYYY/gomall/app/frontend/conf"
+	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
 	"github.com/SGNYYYY/gomall/app/frontend/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
@@ -33,6 +34,7 @@ func main() {
 	// dal.Init()
 	_ = godotenv.Load()
 	address := conf.GetConf().Hertz.Address
+	rpc.Init()
 	h := server.New(server.WithHostPorts(address))
 
 	registerMiddleware(h)
