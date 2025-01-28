@@ -1,6 +1,6 @@
 .PHONY: gen-frontend
-gen-frontend:
-	@cd app/frontend && cwgo server -I ../../idl --type HTTP --idl ../../idl/frontend/auth_page.proto --service frontend -module github.com/SGNYYYY/gomall/app/frontend
+gen-frontend: ## gen frontend page code of {page}. example: make gen-frontend page=category_page
+	@cd app/frontend && cwgo server -I ../../idl --type HTTP --idl ../../idl/frontend/${page}.proto --service frontend -module github.com/SGNYYYY/gomall/app/frontend
 
 .PHONY: gen-client
 gen-client: ## gen client code of {svc}. example: make gen-client svc=product

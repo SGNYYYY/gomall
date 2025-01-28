@@ -12,9 +12,8 @@ service ProductCatalogService {
 
 message ListProductsReq{
   int32 page = 1;
-  int64 pageSize = 2;
-
-  string categoryName = 3;
+  int64 page_size = 2;
+  string category_name = 3;
 }
 
 message Product {

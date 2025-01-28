@@ -4,7 +4,10 @@ import (
 	"context"
 
 	common "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/common"
+	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
+	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/utils"
 )
 
 type HomeService struct {
@@ -17,21 +20,12 @@ func NewHomeService(Context context.Context, RequestContext *app.RequestContext)
 }
 
 func (h *HomeService) Run(req *common.Empty) (map[string]any, error) {
-	//defer func() {
-	// hlog.CtxInfof(h.Context, "req = %+v", req)
-	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
-	//}()
-	// todo edit your code
-	resp := make(map[string]any)
-	items := []map[string]any{
-		{"Name": "Hamberger", "Price": 36, "Picture": "/static/image/hamberger.jpg"},
-		{"Name": "Hamberger", "Price": 36, "Picture": "/static/image/hamberger.jpg"},
-		{"Name": "Hamberger", "Price": 36, "Picture": "/static/image/hamberger.jpg"},
-		{"Name": "Hamberger", "Price": 36, "Picture": "/static/image/hamberger.jpg"},
-		{"Name": "Hamberger", "Price": 36, "Picture": "/static/image/hamberger.jpg"},
-		{"Name": "Hamberger", "Price": 36, "Picture": "/static/image/hamberger.jpg"},
+	p, err := rpc.ProductClient.ListProducts(h.Context, &product.ListProductsReq{})
+	if err != nil {
+		return nil, err
 	}
-	resp["title"] = "Hot Sales"
-	resp["items"] = items
-	return resp, nil
+	return utils.H{
+		"title": "Hot sale",
+		"items": p.Products,
+	}, nil
 }
