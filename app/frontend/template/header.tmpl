@@ -42,6 +42,7 @@
                 value="{{ .q }}">
               <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
+            {{ template "cart-num" .}}
             {{ if .user_id }}
             <div class="nav-item dropdown ms-3">
               <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"

@@ -3,7 +3,9 @@ package utils
 import (
 	"context"
 
-	frontendUtils "github.com/SGNYYYY/gomall/app/frontend/utils"
+	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
+	frontendutils "github.com/SGNYYYY/gomall/app/frontend/utils"
+	rpccart "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -20,6 +22,13 @@ func SendSuccessResponse(ctx context.Context, c *app.RequestContext, code int, d
 }
 
 func WrapResponse(ctx context.Context, c *app.RequestContext, content map[string]any) map[string]any {
-	content["user_id"] = ctx.Value(frontendUtils.UserIdKey)
+	var cartNum int
+	userId := frontendutils.GetUserIdFromCtx(ctx)
+	cartResp, _ := rpc.CartClient.GetCart(ctx, &rpccart.GetCartReq{UserId: userId})
+	if cartResp != nil && cartResp.Cart != nil {
+		cartNum = len(cartResp.Cart.Items)
+	}
+	content["user_id"] = userId
+	content["cart_num"] = cartNum
 	return content
 }
