@@ -62,7 +62,12 @@ func EmptyCart(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp, err := service.NewEmptyCartService(ctx, c).Run(&req)
+	_, err = service.NewEmptyCartService(ctx, c).Run(&req)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+	resp, err := service.NewGetCartService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return

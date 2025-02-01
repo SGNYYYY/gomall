@@ -8,7 +8,6 @@ import (
 	frontendutils "github.com/SGNYYYY/gomall/app/frontend/utils"
 	rpccart "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart"
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/common/utils"
 )
 
 type EmptyCartService struct {
@@ -20,7 +19,7 @@ func NewEmptyCartService(Context context.Context, RequestContext *app.RequestCon
 	return &EmptyCartService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *EmptyCartService) Run(req *common.Empty) (resp map[string]any, err error) {
+func (h *EmptyCartService) Run(req *common.Empty) (resp *common.Empty, err error) {
 	//defer func() {
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
@@ -32,7 +31,5 @@ func (h *EmptyCartService) Run(req *common.Empty) (resp map[string]any, err erro
 	if err != nil {
 		return nil, err
 	}
-	return utils.H{
-		"title": "Cart",
-	}, nil
+	return
 }
