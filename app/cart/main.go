@@ -6,7 +6,7 @@ import (
 
 	"github.com/SGNYYYY/gomall/app/cart/biz/dal"
 	"github.com/SGNYYYY/gomall/app/cart/conf"
-	"github.com/SGNYYYY/gomall/app/cart/rpc"
+	"github.com/SGNYYYY/gomall/app/cart/infra/rpc"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
