@@ -5,15 +5,18 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/SGNYYYY/gomall/app/checkout/infra/mq"
 	"github.com/SGNYYYY/gomall/app/checkout/infra/rpc"
 	rpccart "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart"
 	checkout "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout"
-	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order"
+	rpcemail "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/email"
 	rpcorder "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/payment"
 	rpcproduct "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/nats-io/nats.go"
+	"google.golang.org/protobuf/proto"
 )
 
 type CheckoutService struct {
@@ -54,7 +57,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		p := productResp.Product.Price
 
 		cost := float32(cartItem.Quantity) * p
-		oi = append(oi, &order.OrderItem{
+		oi = append(oi, &rpcorder.OrderItem{
 			Cost: cost,
 			Item: &rpccart.CartItem{ProductId: cartItem.ProductId, Quantity: cartItem.Quantity},
 		})
@@ -106,6 +109,17 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if err != nil {
 		klog.Error(err.Error())
 	}
+
+	data, _ := proto.Marshal(&rpcemail.EmailReq{
+		From:        "from@example.com",
+		To:          req.Email,
+		ContentType: "text/plain",
+		Subject:     "You have just created an order in GOMALL",
+		Content:     "You have just created an order in GOMALL",
+	})
+	msg := &nats.Msg{Subject: "email", Data: data}
+
+	_ = mq.Nc.PublishMsg(msg)
 
 	paymentResult, err := rpc.PaymentClient.Charge(s.ctx, payReq)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/SGNYYYY/gomall/app/checkout/conf"
+	"github.com/SGNYYYY/gomall/app/checkout/infra/mq"
 	"github.com/SGNYYYY/gomall/app/checkout/infra/rpc"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -23,6 +24,7 @@ func main() {
 	// if err != nil {
 	// 	klog.Error(err.Error())
 	// }
+	mq.Init()
 	opts := kitexInit()
 	rpc.InitClient()
 
