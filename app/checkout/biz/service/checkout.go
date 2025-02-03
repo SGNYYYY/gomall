@@ -2,15 +2,18 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/SGNYYYY/gomall/app/checkout/infra/rpc"
 	rpccart "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart"
 	checkout "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout"
+	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order"
+	rpcorder "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/payment"
 	rpcproduct "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/google/uuid"
 )
 
 type CheckoutService struct {
@@ -32,7 +35,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if cartResult == nil || cartResult.Cart.Items == nil {
 		return nil, kerrors.NewGRPCBizStatusError(5004001, "cart is empty")
 	}
-
+	var oi []*rpcorder.OrderItem
 	var total float32
 	for _, cartItem := range cartResult.Cart.Items {
 		// 避免在for循环内调用rpc服务, 应该在for循环外统一获取然后遍历赋值
@@ -51,14 +54,41 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		p := productResp.Product.Price
 
 		cost := float32(cartItem.Quantity) * p
-
+		oi = append(oi, &order.OrderItem{
+			Cost: cost,
+			Item: &rpccart.CartItem{ProductId: cartItem.ProductId, Quantity: cartItem.Quantity},
+		})
 		total += cost
 	}
 
 	var orderId string
 	// TODO orderservice
-	u, _ := uuid.NewRandom()
-	orderId = u.String()
+	orderReq := &rpcorder.PlaceOrderReq{
+		UserId:       req.UserId,
+		UserCurrency: "USD",
+		OrderItems:   oi,
+		Email:        req.Email,
+	}
+	if req.Address != nil {
+		addr := req.Address
+		zipCodeInt, _ := strconv.Atoi(addr.ZipCode)
+		orderReq.Address = &rpcorder.Address{
+			StreetAddress: addr.StreetAddress,
+			City:          addr.City,
+			Country:       addr.Country,
+			State:         addr.State,
+			ZipCode:       int32(zipCodeInt),
+		}
+	}
+	orderResult, err := rpc.OrderClient.PlaceOrder(s.ctx, orderReq)
+	if err != nil {
+		err = fmt.Errorf("PlaceOrder.err:%v", err)
+		return
+	}
+	klog.Info("orderResult", orderResult)
+	if orderResult != nil && orderResult.Order != nil {
+		orderId = orderResult.Order.OrderId
+	}
 
 	payReq := &payment.ChargeReq{
 		UserId:  req.UserId,
@@ -71,6 +101,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 			CreditCardExpirationYear:  req.CreditCard.CreditCardExpirationYear,
 		},
 	}
+	// 清空购物车
 	_, err = rpc.CartClient.EmptyCart(s.ctx, &rpccart.EmptyCartReq{UserId: req.UserId})
 	if err != nil {
 		klog.Error(err.Error())
