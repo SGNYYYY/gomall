@@ -23,10 +23,6 @@ func NewGetCartService(Context context.Context, RequestContext *app.RequestConte
 }
 
 func (h *GetCartService) Run(req *common.Empty) (resp map[string]any, err error) {
-	//defer func() {
-	// hlog.CtxInfof(h.Context, "req = %+v", req)
-	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
-	//}()
 	cartResp, err := rpc.CartClient.GetCart(h.Context, &rpccart.GetCartReq{
 		UserId: frontendutils.GetUserIdFromCtx(h.Context),
 	})

@@ -10,17 +10,21 @@ service AuthService {
 }
 
 message DeliverTokenReq {
-    int32  user_id= 0;
+    int32  user_id= 1;
+    string role = 2;
 }
 
 message VerifyTokenReq {
-    string token = "emtp";
+    string token = 1;
 }
 
 message DeliveryResp {
-    string token = "emtp";
+    string token = 1;
 }
 
 message VerifyResp {
-    bool res = false;
+    bool res = 1;
+    string token = 2;
+    int32  user_id= 3;
+    string role = 4;
 }

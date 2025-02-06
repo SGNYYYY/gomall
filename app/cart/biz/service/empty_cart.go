@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/SGNYYYY/gomall/app/cart/biz/dal/mysql"
 	"github.com/SGNYYYY/gomall/app/cart/biz/model"
@@ -19,10 +18,6 @@ func NewEmptyCartService(ctx context.Context) *EmptyCartService {
 
 // Run create note info
 func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp, err error) {
-	// Finish your business logic.
-	fmt.Println("Service started")
-	fmt.Println(req.UserId)
-	fmt.Println(mysql.DB)
 	err = model.EmptyCart(s.ctx, mysql.DB, req.UserId)
 	if err != nil {
 		return nil, kerrors.NewBizStatusError(50001, err.Error())

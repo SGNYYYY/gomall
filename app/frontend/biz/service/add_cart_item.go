@@ -4,7 +4,7 @@ import (
 	"context"
 
 	cart "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/cart"
-	common "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/common"
+	"github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/common"
 	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
 	frontendUtils "github.com/SGNYYYY/gomall/app/frontend/utils"
 	rpccart "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart"
@@ -21,11 +21,6 @@ func NewAddCartItemService(Context context.Context, RequestContext *app.RequestC
 }
 
 func (h *AddCartItemService) Run(req *cart.AddCartReq) (resp *common.Empty, err error) {
-	//defer func() {
-	// hlog.CtxInfof(h.Context, "req = %+v", req)
-	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
-	//}()
-	// todo edit your code
 	_, err = rpc.CartClient.AddItem(h.Context, &rpccart.AddItemReq{
 		UserId: frontendUtils.GetUserIdFromCtx(h.Context),
 		Item: &rpccart.CartItem{

@@ -5,6 +5,7 @@ import (
 
 	"github.com/SGNYYYY/gomall/app/frontend/conf"
 	frontendUtils "github.com/SGNYYYY/gomall/app/frontend/utils"
+	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/auth/authservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order/orderservice"
@@ -20,6 +21,7 @@ var (
 	CartClient     cartservice.Client
 	ChechoutClient checkoutservice.Client
 	OrderClient    orderservice.Client
+	AuthClient     authservice.Client
 	once           sync.Once
 )
 
@@ -30,6 +32,7 @@ func Init() {
 		initCartClient()
 		initCheckoutClient()
 		initOrderClient()
+		initAuthClient()
 	})
 }
 
@@ -65,5 +68,12 @@ func initOrderClient() {
 	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddress)
 	frontendUtils.MustHandleError(err)
 	OrderClient, err = orderservice.NewClient("order", client.WithResolver(r))
+	frontendUtils.MustHandleError(err)
+}
+
+func initAuthClient() {
+	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddress)
+	frontendUtils.MustHandleError(err)
+	AuthClient, err = authservice.NewClient("auth", client.WithResolver(r))
 	frontendUtils.MustHandleError(err)
 }

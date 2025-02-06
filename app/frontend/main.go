@@ -50,18 +50,18 @@ func main() {
 
 	h.GET("/sign-in", func(ctx context.Context, c *app.RequestContext) {
 		data := utils.H{
-			"Title": "Sign In",
-			"Next":  string(c.GetHeader("Referer")),
+			"title": "Sign In",
+			"next":  string(c.GetHeader("Referer")),
 		}
 		c.HTML(consts.StatusOK, "sign-in", data)
 	})
 
 	h.GET("/sign-up", func(ctx context.Context, c *app.RequestContext) {
-		c.HTML(consts.StatusOK, "sign-up", utils.H{"Title": "Sign Up"})
+		c.HTML(consts.StatusOK, "sign-up", utils.H{"title": "Sign Up"})
 	})
 
 	h.GET("/about", func(ctx context.Context, c *app.RequestContext) {
-		c.HTML(consts.StatusOK, "about", utils.H{"Title": "About"})
+		c.HTML(consts.StatusOK, "about", utils.H{"title": "About"})
 	})
 
 	h.Spin()

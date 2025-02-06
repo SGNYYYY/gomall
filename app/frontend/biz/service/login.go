@@ -5,7 +5,8 @@ import (
 
 	auth "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/auth"
 	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
-	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/user"
+	rpcauth "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/auth"
+	rpcuser "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/user"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/sessions"
 )
@@ -19,12 +20,12 @@ func NewLoginService(Context context.Context, RequestContext *app.RequestContext
 	return &LoginService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *LoginService) Run(req *auth.LoginReq) (redirect string, err error) {
+func (h *LoginService) Run(req *auth.LoginReq) (resp string, err error) {
 	//defer func() {
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
 	//}()
-	resp, err := rpc.UserClient.Login(h.Context, &user.LoginReq{
+	loginrResp, err := rpc.UserClient.Login(h.Context, &rpcuser.LoginReq{
 		Email:    req.Email,
 		Password: req.Password,
 	})
@@ -32,12 +33,20 @@ func (h *LoginService) Run(req *auth.LoginReq) (redirect string, err error) {
 		return "", err
 	}
 
+	stringToken, err := rpc.AuthClient.DeliverTokenByRPC(h.Context, &rpcauth.DeliverTokenReq{
+		UserId: loginrResp.UserId,
+		Role:   loginrResp.Role,
+	})
+	if err != nil {
+		return "", err
+	}
 	session := sessions.Default(h.RequestContext)
-	session.Set("user_id", resp.UserId)
+	session.Set("token", stringToken.Token)
 	err = session.Save()
 	if err != nil {
 		return "", err
 	}
+	var redirect string
 	if req.Next != "" {
 		redirect = req.Next
 	} else {
