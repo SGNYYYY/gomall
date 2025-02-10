@@ -5,7 +5,7 @@ import (
 
 	product "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/product"
 	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
-	rpcprodect "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
+	rpcproduct "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 )
@@ -24,7 +24,7 @@ func (h *GetProductService) Run(req *product.ProductReq) (resp map[string]any, e
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
 	//}()
-	p, err := rpc.ProductClient.GetProduct(h.Context, &rpcprodect.GetProductReq{
+	p, err := rpc.ProductClient.GetProduct(h.Context, &rpcproduct.GetProductReq{
 		Id: req.Id,
 	})
 	if err != nil {

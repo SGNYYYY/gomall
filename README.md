@@ -42,3 +42,69 @@
 ### AI大模型
 - [ ] 订单查询
 - [ ] 模拟自动下单
+
+## 数据库设计
+### 用户表 user
+| 字段 | 类型 | 描述 | 备注 |
+| --  | -- | -- | --|
+| ID | uint | 用户id | pk |
+| Email | varchar(255) | 邮箱 | not null |
+| PasswordHashed | varchar(255) | 密码 | not null |
+| Role | char(10) | 用户角色 | admin, user; 默认值:user|
+
+
+### 商品表 product
+| 字段 | 类型 | 描述 | 备注 |
+| --  | -- | -- | --|
+| ID | int | 商品id | pk |
+| Name |    | 商品名 | |
+| Description| | 商品描述 ||
+| Picture | | 商品图片| |
+| Price |  | 商品价格 ||
+| Categoreis | | 商品种类| fk |
+
+### 商品种类表 category
+| 字段 | 类型 | 描述 | 备注 |
+| --  | -- | -- | --|
+| ID | int | 商品id | pk |
+| Name |    | 商品名 | |
+| Description| | 商品描述 ||
+| Products | | 商品种类|fk|
+
+### 购物车表 cart
+| 字段 | 类型 | 描述 | 备注 |
+| --  | -- | -- | --|
+| ID | int | 购物车id | pk |
+| UserId |    | 用户id | |
+| ProductId| | 商品id ||
+| Qty | | 商品数量||
+
+### 订单表 order
+| 字段 | 类型 | 描述 | 备注 |
+| --  | -- | -- | --|
+| ID | int | 订单id | pk |
+| OrderId |    | 订单号 | |
+| UserId| | 用户id ||
+| UserCurrency | | 使用货币种类||
+| Consignee | | 收货人信息| fk |
+| OrderItems | |订单明细| fk|
+| OrderState | | 订单状态 | placed, paid, canceled |
+
+### 订单明细表 order_item
+| 字段 | 类型 | 描述 | 备注 |
+| --  | -- | -- | --|
+| ID | int | 订单id | pk |
+| ProductId | uint | 商品id | |
+| OrderIdRefer| | 用户id |fk|
+| Quantity | |商品数量| fk|
+| Cost | | 总价格 | |
+
+### 支付记录表 payment
+| 字段 | 类型 | 描述 | 备注 |
+| --  | -- | -- | --|
+| ID | int | 订单id | pk |
+| UserId| | 用户id ||
+| OrderId |    | 订单号 | |
+| TransactionId | | 交易id||
+| Amount | |总金额|  |
+| PayAt | | 支付时间 | |

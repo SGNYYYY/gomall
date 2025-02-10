@@ -11,7 +11,7 @@ type Category struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 
-	Products []Product `json:"prodect" gorm:"many2many:product_category"`
+	Products []Product `json:"product" gorm:"many2many:product_category"`
 }
 
 func (c Category) TableName() string {
