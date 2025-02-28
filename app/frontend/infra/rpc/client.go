@@ -10,6 +10,7 @@ import (
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order/orderservice"
+	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/payment/paymentservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
@@ -19,9 +20,10 @@ var (
 	UserClient     userservice.Client
 	ProductClient  productcatalogservice.Client
 	CartClient     cartservice.Client
-	ChechoutClient checkoutservice.Client
+	CheckoutClient checkoutservice.Client
 	OrderClient    orderservice.Client
 	AuthClient     authservice.Client
+	PaymentClient  paymentservice.Client
 	once           sync.Once
 	err            error
 	registryAddr   string
@@ -41,6 +43,7 @@ func Init() {
 		initCheckoutClient()
 		initOrderClient()
 		initAuthClient()
+		initPaymentClient()
 	})
 }
 
@@ -60,7 +63,12 @@ func initCartClient() {
 }
 
 func initCheckoutClient() {
-	ChechoutClient, err = checkoutservice.NewClient("checkout", commonSuite)
+	CheckoutClient, err = checkoutservice.NewClient("checkout", commonSuite)
+	frontendUtils.MustHandleError(err)
+}
+
+func initPaymentClient() {
+	PaymentClient, err = paymentservice.NewClient("payment", commonSuite)
 	frontendUtils.MustHandleError(err)
 }
 

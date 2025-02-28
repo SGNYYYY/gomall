@@ -7,7 +7,6 @@ import (
 	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
 	frontendutils "github.com/SGNYYYY/gomall/app/frontend/utils"
 	rpccheckout "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout"
-	rpcpayment "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/payment"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 )
@@ -23,7 +22,7 @@ func NewCheckoutWaitingService(Context context.Context, RequestContext *app.Requ
 
 func (h *CheckoutWaitingService) Run(req *checkout.CheckoutReq) (resp map[string]any, err error) {
 	userId := frontendutils.GetUserIdFromCtx(h.Context)
-	_, err = rpc.ChechoutClient.Checkout(h.Context, &rpccheckout.CheckoutReq{
+	r, err := rpc.CheckoutClient.Checkout(h.Context, &rpccheckout.CheckoutReq{
 		UserId:    userId,
 		Email:     req.Email,
 		Firstname: req.Firstname,
@@ -35,18 +34,18 @@ func (h *CheckoutWaitingService) Run(req *checkout.CheckoutReq) (resp map[string
 			State:         req.Province,
 			StreetAddress: req.Street,
 		},
-		CreditCard: &rpcpayment.CreditCardInfo{
-			CreditCardNumber:          req.CardNum,
-			CreditCardExpirationYear:  req.ExpirationYear,
-			CreditCardExpirationMonth: req.ExpirationMonth,
-			CreditCardCvv:             req.Cvv,
-		},
+		// CreditCard: &rpcpayment.CreditCardInfo{
+		// 	CreditCardNumber:          req.CardNum,
+		// 	CreditCardExpirationYear:  req.ExpirationYear,
+		// 	CreditCardExpirationMonth: req.ExpirationMonth,
+		// 	CreditCardCvv:             req.Cvv,
+		// },
 	})
 	if err != nil {
 		return nil, err
 	}
 	return utils.H{
-		"title":    "waiting",
-		"redirect": "/checkout/result",
+		"title":    "Payment",
+		"redirect": "/payment?orderId=" + r.OrderId,
 	}, nil
 }

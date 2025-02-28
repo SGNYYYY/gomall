@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package frontend.payment;
+
+import "api.proto";
+import "frontend/common.proto";
+
+option go_package = "/frontend/payment";
+
+message PaymentReq {
+  string card_num = 1 [(api.form) = "cardNum"];
+  int32 expiration_month = 2 [(api.form) = "expirationMonth"];
+  int32 expiration_year = 3 [(api.form) = "expirationYear"];
+  int32 cvv = 4 [(api.form) = "cvv"];
+  string payment = 5 [(api.form) = "payment"];
+  string order_id = 6[(api.form) = "orderId"];
+  float total = 7[(api.form) = "total"];
+}
+
+message PaymentPageReq {
+  string order_id = 1[(api.query) = "orderId"];
+}
+
+service PaymentService {
+  rpc Payment(PaymentPageReq) returns (common.Empty) {
+    option (api.get) = "/payment";
+  }
+  rpc PaymentWaiting(PaymentReq) returns (common.Empty) {
+    option (api.post) = "/payment/waiting";
+  }
+  rpc PaymentResult(common.Empty) returns (common.Empty) {
+    option (api.get) = "/payment/result";
+  }
+}

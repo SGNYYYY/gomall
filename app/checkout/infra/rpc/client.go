@@ -32,7 +32,6 @@ func InitClient() {
 		})
 		initCartClient()
 		initProductClient()
-		initPaymentClient()
 		initOrderClient()
 	})
 }
@@ -46,13 +45,6 @@ func initCartClient() {
 
 func initProductClient() {
 	ProductClient, err = productcatalogservice.NewClient("product", commonSuite)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func initPaymentClient() {
-	PaymentClient, err = paymentservice.NewClient("payment", commonSuite)
 	if err != nil {
 		panic(err)
 	}

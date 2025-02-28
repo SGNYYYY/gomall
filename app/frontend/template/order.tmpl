@@ -29,6 +29,26 @@
                         </li>
                         {{ end}}
                     </ul>
+                    <div class="mt-3 mb-3">
+                        <div class="float-end">
+                            <div class="m-3 text-danger">Total: ${{ .Cost }}</div>
+                            {{if eq .OrderState "placed"}}
+                            <a href="/payment?orderId={{.OrderId}}" class="btn">
+                                <button class="btn btn-success">去支付</button>
+                            </a>
+                            <form method="post" action="/order/cancel">
+                                <input type="hidden" id="order-id" class="form-control" name="orderId"
+                                    placeholder="OrderId" value="{{.OrderId}}">
+                                <input type="submit" class="btn btn-danger" value="取消订单">
+                            </form>
+                            {{else if eq .OrderState "canceled"}}
+                            <div class="m-3">已取消</div>
+                            {{else}}
+                            <div class="m-3">已支付</div>
+                            {{end}}
+
+                        </div>
+                    </div>
                 </div>
             </div>
             <p>

@@ -7,6 +7,7 @@ option go_package = "/product";
 service ProductCatalogService {
   rpc ListProducts(ListProductsReq) returns (ListProductsResp) {}
   rpc GetProduct(GetProductReq) returns (GetProductResp) {}
+  rpc GetProducts(GetProductsReq) returns (GetProductsResp) {}
   rpc SearchProducts(SearchProductsReq) returns (SearchProductsResp) {}
 }
 
@@ -44,4 +45,12 @@ message SearchProductsReq {
 
 message SearchProductsResp {
   repeated Product results = 1;
+}
+
+message GetProductsReq {
+  repeated uint32 ids = 1;
+}
+
+message GetProductsResp {
+  repeated Product products = 1;
 }

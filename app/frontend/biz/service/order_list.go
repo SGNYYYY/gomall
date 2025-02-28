@@ -70,9 +70,9 @@ func (h *OrderListService) Run(req *common.Empty) (resp map[string]any, err erro
 			CreatedDate: timeObj.Format("2006-01-02 15:04:05"),
 			OrderId:     v.OrderId,
 			Consignee:   types.Consignee{Email: v.Email},
+			OrderState:  v.OrderState,
 		})
 	}
-
 	return utils.H{
 		"title":  "Order",
 		"orders": orders,

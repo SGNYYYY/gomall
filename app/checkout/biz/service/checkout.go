@@ -11,7 +11,6 @@ import (
 	checkout "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout"
 	rpcemail "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/email"
 	rpcorder "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order"
-	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/payment"
 	rpcproduct "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -40,6 +39,8 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if cartResult == nil || cartResult.Cart.Items == nil {
 		return nil, kerrors.NewGRPCBizStatusError(5004001, "cart is empty")
 	}
+
+	// 从购物车中获取订单item信息
 	var oi []*rpcorder.OrderItem
 	var total float32
 	for _, cartItem := range cartResult.Cart.Items {
@@ -66,6 +67,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		total += cost
 	}
 
+	// 下订单，下单的时候支付的状态为未支付
 	var orderId string
 	orderReq := &rpcorder.PlaceOrderReq{
 		UserId:       req.UserId,
@@ -94,17 +96,18 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		orderId = orderResult.Order.OrderId
 	}
 
-	payReq := &payment.ChargeReq{
-		UserId:  req.UserId,
-		OrderId: orderId,
-		Amount:  total,
-		CreditCard: &payment.CreditCardInfo{
-			CreditCardNumber:          req.CreditCard.CreditCardNumber,
-			CreditCardCvv:             req.CreditCard.CreditCardCvv,
-			CreditCardExpirationMonth: req.CreditCard.CreditCardExpirationMonth,
-			CreditCardExpirationYear:  req.CreditCard.CreditCardExpirationYear,
-		},
-	}
+	// TODO，把支付放到支付里面
+	// payReq := &payment.ChargeReq{
+	// 	UserId:  req.UserId,
+	// 	OrderId: orderId,
+	// 	Amount:  total,
+	// 	CreditCard: &payment.CreditCardInfo{
+	// 		CreditCardNumber:          req.CreditCard.CreditCardNumber,
+	// 		CreditCardCvv:             req.CreditCard.CreditCardCvv,
+	// 		CreditCardExpirationMonth: req.CreditCard.CreditCardExpirationMonth,
+	// 		CreditCardExpirationYear:  req.CreditCard.CreditCardExpirationYear,
+	// 	},
+	// }
 	// 清空购物车
 	_, err = rpc.CartClient.EmptyCart(s.ctx, &rpccart.EmptyCartReq{UserId: req.UserId})
 	if err != nil {
@@ -123,15 +126,16 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 
 	_ = mq.Nc.PublishMsg(msg)
 
-	paymentResult, err := rpc.PaymentClient.Charge(s.ctx, payReq)
-	if err != nil {
-		return nil, err
-	}
+	// paymentResult, err := rpc.PaymentClient.Charge(s.ctx, payReq)
 
-	klog.Info(paymentResult)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// klog.Info(paymentResult)
 	resp = &checkout.CheckoutResp{
-		OrderId:       orderId,
-		TransactionId: paymentResult.TransactionId,
+		OrderId: orderId,
+		// TransactionId: paymentResult.TransactionId,
 	}
 	return resp, nil
 }

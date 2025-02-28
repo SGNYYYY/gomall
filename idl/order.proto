@@ -10,6 +10,8 @@ service OrderService {
   rpc PlaceOrder(PlaceOrderReq) returns (PlaceOrderResp) {}
   rpc ListOrder(ListOrderReq) returns (ListOrderResp) {}
   rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp) {}
+  rpc MarkOrderCanceled(MarkOrderCanceledReq) returns (MarkOrderCanceledResp) {}
+  rpc GetOrder(GetOrderReq) returns (GetOrderResp) {}
 }
 
 message Address {
@@ -54,6 +56,7 @@ message Order {
   Address address = 5;
   string email = 6;
   int32 created_at = 7;
+  string order_state = 8;
 }
 
 message ListOrderResp {
@@ -65,4 +68,18 @@ message MarkOrderPaidReq {
   string order_id = 2;
 }
 
+message MarkOrderCanceledReq {
+  uint32 user_id = 1;
+  string order_id = 2;
+}
+
 message MarkOrderPaidResp {}
+message MarkOrderCanceledResp {}
+
+message GetOrderReq {
+  string order_id = 1;
+}
+
+message GetOrderResp {
+  Order order = 1;
+}

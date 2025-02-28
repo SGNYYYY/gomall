@@ -18,4 +18,6 @@ func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
 	root.GET("/order", append(_orderlistMw(), order.OrderList)...)
+	_order := root.Group("/order", _orderMw()...)
+	_order.POST("/cancel", append(_cancelorderMw(), order.CancelOrder)...)
 }

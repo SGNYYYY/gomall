@@ -32,7 +32,7 @@ func Checkout(ctx context.Context, c *app.RequestContext) {
 }
 
 // CheckoutWaiting .
-// @router /checkout/waiting [POST]
+// @router /checkout [POST]
 func CheckoutWaiting(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req checkout.CheckoutReq
@@ -48,7 +48,7 @@ func CheckoutWaiting(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	c.HTML(consts.StatusOK, "waiting", utils.WrapResponse(ctx, c, resp))
+	c.HTML(consts.StatusOK, "payment", utils.WrapResponse(ctx, c, resp))
 }
 
 // CheckoutResult .

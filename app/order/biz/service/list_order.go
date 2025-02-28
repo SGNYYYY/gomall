@@ -51,6 +51,7 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 			},
 			OrderItems: items,
 			CreatedAt:  int32(v.CreatedAt.Unix()),
+			OrderState: string(v.OrderState),
 		})
 	}
 	return &order.ListOrderResp{

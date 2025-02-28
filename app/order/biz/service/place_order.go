@@ -36,6 +36,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 			Consignee: model.Consignee{
 				Email: req.Email,
 			},
+			OrderState: model.OrderStatePlaced, // 下单时订单状态默认未支付
 		}
 		if req.Address != nil {
 			o.Consignee.StreetAddress = req.Address.StreetAddress

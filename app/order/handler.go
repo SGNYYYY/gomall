@@ -29,3 +29,17 @@ func (s *OrderServiceImpl) MarkOrderPaid(ctx context.Context, req *order.MarkOrd
 
 	return resp, err
 }
+
+// MarkOrderCanceled implements the OrderServiceImpl interface.
+func (s *OrderServiceImpl) MarkOrderCanceled(ctx context.Context, req *order.MarkOrderCanceledReq) (resp *order.MarkOrderCanceledResp, err error) {
+	resp, err = service.NewMarkOrderCanceledService(ctx).Run(req)
+
+	return resp, err
+}
+
+// GetOrder implements the OrderServiceImpl interface.
+func (s *OrderServiceImpl) GetOrder(ctx context.Context, req *order.GetOrderReq) (resp *order.GetOrderResp, err error) {
+	resp, err = service.NewGetOrderService(ctx).Run(req)
+
+	return resp, err
+}
