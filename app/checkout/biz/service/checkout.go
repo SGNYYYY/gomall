@@ -16,6 +16,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/nats-io/nats.go"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -65,7 +67,6 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	}
 
 	var orderId string
-	// TODO orderservice
 	orderReq := &rpcorder.PlaceOrderReq{
 		UserId:       req.UserId,
 		UserCurrency: "USD",
@@ -117,7 +118,8 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		Subject:     "You have just created an order in GOMALL",
 		Content:     "You have just created an order in GOMALL",
 	})
-	msg := &nats.Msg{Subject: "email", Data: data}
+	msg := &nats.Msg{Subject: "email", Data: data, Header: make(nats.Header)}
+	otel.GetTextMapPropagator().Inject(s.ctx, propagation.HeaderCarrier(msg.Header))
 
 	_ = mq.Nc.PublishMsg(msg)
 

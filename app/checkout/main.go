@@ -1,20 +1,26 @@
 package main
 
 import (
+	"context"
 	"net"
 	"time"
 
 	"github.com/SGNYYYY/gomall/app/checkout/conf"
 	"github.com/SGNYYYY/gomall/app/checkout/infra/mq"
 	"github.com/SGNYYYY/gomall/app/checkout/infra/rpc"
+	"github.com/SGNYYYY/gomall/common/mtl"
+	"github.com/SGNYYYY/gomall/common/serversuite"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+)
+
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
 )
 
 func main() {
@@ -24,6 +30,10 @@ func main() {
 	// if err != nil {
 	// 	klog.Error(err.Error())
 	// }
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background()) //nolint:errcheck
+
 	mq.Init()
 	opts := kitexInit()
 	rpc.InitClient()
@@ -42,18 +52,9 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-	opts = append(opts, server.WithServiceAddr(addr))
-
-	// service registry
-	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		klog.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(r))
-
-	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
 	}))
 
 	// klog

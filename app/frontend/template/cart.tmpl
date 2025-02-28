@@ -28,12 +28,12 @@
         const cartNumbers = document.getElementById('cart-numbers');
 
         // 清空现有购物车项
-        cartItemsList.innerHTML = '';
+        cartItemsList.innerHTML = ``;
 
         // 如果没有商品，显示空购物车
         if (items === null || items.length === 0) {
-            cartNumbers.innerHTML = '';
-            cartItemsList.innerHTML = '';
+            cartNumbers.innerHTML = ``;
+            cartItemsList.innerHTML = ``;
             cartOtherComp.innerHTML = `<h1 class="text-center text-danger">Your Cart is empty</h1>
         <div class="text-center"><a href="/">Shop Hot Sale</a></div>`
         } else {

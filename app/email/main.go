@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"net"
 	"time"
 
 	"github.com/SGNYYYY/gomall/app/email/biz/consumer"
 	"github.com/SGNYYYY/gomall/app/email/conf"
 	"github.com/SGNYYYY/gomall/app/email/infra/mq"
+	"github.com/SGNYYYY/gomall/common/mtl"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/email/emailservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -16,7 +18,15 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
+)
+
 func main() {
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background()) //nolint:errcheck
 	mq.Init()
 	consumer.Init()
 	opts := kitexInit()
