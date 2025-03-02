@@ -7,6 +7,7 @@ import (
 
 	"github.com/SGNYYYY/gomall/app/order/biz/dal"
 	"github.com/SGNYYYY/gomall/app/order/conf"
+	"github.com/SGNYYYY/gomall/app/order/infra/schedule"
 	"github.com/SGNYYYY/gomall/common/mtl"
 	"github.com/SGNYYYY/gomall/common/serversuite"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order/orderservice"
@@ -14,6 +15,8 @@ import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
+	"github.com/reugn/go-quartz/job"
+	"github.com/reugn/go-quartz/quartz"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -31,6 +34,16 @@ func main() {
 
 	dal.Init()
 	opts := kitexInit()
+
+	scheduler, _ := quartz.NewStdScheduler()
+	scheduler.Start(context.Background())
+	job_cancel := &schedule.OrderCancellationJob{}
+	functionJob := job.NewFunctionJob(func(_ context.Context) (int, error) {
+		job_cancel.Execute()
+		return 1, nil
+	})
+	trigger := quartz.NewSimpleTrigger(1 * time.Minute)
+	_ = scheduler.ScheduleJob(quartz.NewJobDetail(functionJob, quartz.NewJobKey("ScheduleCancelOrder")), trigger)
 
 	svr := orderservice.NewServer(new(OrderServiceImpl), opts...)
 

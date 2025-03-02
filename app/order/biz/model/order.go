@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -59,4 +60,14 @@ func MarkOrderPaid(ctx context.Context, db *gorm.DB, userId uint32, orderId stri
 
 func MarkOrderCanceled(ctx context.Context, db *gorm.DB, userId uint32, orderId string) error {
 	return db.WithContext(ctx).Model(&Order{}).Where("user_id = ? AND order_id = ? ", userId, orderId).Update("order_state", OrderStateCanceled).Error
+}
+
+func CanceledByOrderId(ctx context.Context, db *gorm.DB, orderId string) error {
+	return db.WithContext(ctx).Model(&Order{}).Where("order_id = ? ", orderId).Update("order_state", OrderStateCanceled).Error
+}
+
+func GetPendingOrders(ctx context.Context, db *gorm.DB) ([]*Order, error) {
+	var orders []*Order
+	err := db.WithContext(ctx).Model(&Order{}).Where("order_state = ? AND created_at < ?", OrderStatePlaced, time.Now().Add(-30*time.Minute)).Find(&orders).Error
+	return orders, err
 }
