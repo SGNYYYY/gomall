@@ -19,6 +19,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/circuitbreak"
 	"github.com/cloudwego/kitex/pkg/fallback"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	consulclient "github.com/kitex-contrib/config-consul/client"
+	"github.com/kitex-contrib/config-consul/consul"
 )
 
 var (
@@ -64,7 +66,10 @@ func initProductClient() {
 	cbs.UpdateServiceCBConfig("frontend/product/GetProduct",
 		circuitbreak.CBConfig{Enable: true, ErrRate: 0.5, MinSample: 2},
 	)
-
+	consulClient, err := consul.NewClient(consul.Options{})
+	if err != nil {
+		panic(err)
+	}
 	ProductClient, err = productcatalogservice.NewClient("product",
 		commonSuite,
 		client.WithCircuitBreaker(cbs),
@@ -92,7 +97,9 @@ func initProductClient() {
 						}, nil
 					}),
 			),
-		))
+		),
+		client.WithSuite(consulclient.NewSuite("product", frontendUtils.ServiceName, consulClient)),
+	)
 	frontendUtils.MustHandleError(err)
 }
 
