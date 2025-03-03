@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/SGNYYYY/gomall/app/checkout/biz/dal/redis"
 	"github.com/SGNYYYY/gomall/app/product/biz/dal/mysql"
+	"github.com/SGNYYYY/gomall/app/product/biz/dal/redis"
 	"github.com/SGNYYYY/gomall/app/product/biz/model"
 	product "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"

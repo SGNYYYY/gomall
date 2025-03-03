@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"context"
 	"sync"
 
 	"github.com/SGNYYYY/gomall/app/frontend/conf"
@@ -11,9 +12,13 @@ import (
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order/orderservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/payment/paymentservice"
+	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/pkg/circuitbreak"
+	"github.com/cloudwego/kitex/pkg/fallback"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
 )
 
 var (
@@ -53,7 +58,41 @@ func initUserClient() {
 }
 
 func initProductClient() {
-	ProductClient, err = productcatalogservice.NewClient("product", commonSuite)
+	cbs := circuitbreak.NewCBSuite(func(ri rpcinfo.RPCInfo) string {
+		return circuitbreak.RPCInfo2Key(ri)
+	})
+	cbs.UpdateServiceCBConfig("frontend/product/GetProduct",
+		circuitbreak.CBConfig{Enable: true, ErrRate: 0.5, MinSample: 2},
+	)
+
+	ProductClient, err = productcatalogservice.NewClient("product",
+		commonSuite,
+		client.WithCircuitBreaker(cbs),
+		client.WithFallback(
+			fallback.NewFallbackPolicy(
+				fallback.UnwrapHelper(
+					func(ctx context.Context, req, resp interface{}, err error) (fbResp interface{}, fbErr error) {
+						if err == nil {
+							return resp, nil
+						}
+						methodName := rpcinfo.GetRPCInfo(ctx).To().Method()
+						if methodName != "ListProducts" {
+							return resp, err
+						}
+						return &product.ListProductsResp{
+							Products: []*product.Product{
+								{
+									Price:       6.6,
+									Id:          3,
+									Picture:     "/static/image/t-shirt.jpeg",
+									Name:        "T-Shirt",
+									Description: "CloudWeGo T-Shirt",
+								},
+							},
+						}, nil
+					}),
+			),
+		))
 	frontendUtils.MustHandleError(err)
 }
 

@@ -63,17 +63,16 @@ func (c CachedProductQuery) GetById(productId int) (product Product, err error) 
 	cacheResult := c.cacheClient.Get(c.productQuery.ctx, cachedKey)
 
 	err = func() error {
-		if err := cacheResult.Err(); err != nil {
-			return err
+		if err1 := cacheResult.Err(); err1 != nil {
+			return err1
 		}
-		cachedResultByte, err := cacheResult.Bytes()
-		if err != nil {
-			return err
+		cachedResultByte, err2 := cacheResult.Bytes()
+		if err2 != nil {
+			return err2
 		}
-
-		err = json.Unmarshal(cachedResultByte, &product)
-		if err != nil {
-			return err
+		err3 := json.Unmarshal(cachedResultByte, &product)
+		if err3 != nil {
+			return err3
 		}
 		return nil
 	}()
