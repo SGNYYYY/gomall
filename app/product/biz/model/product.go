@@ -8,6 +8,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Product struct {
@@ -105,4 +106,23 @@ func NewCachedProductQuery(ctx context.Context, db *gorm.DB, cacheClient *redis.
 type ProductMutation struct {
 	ctx context.Context
 	db  *gorm.DB
+}
+
+func (p ProductMutation) Create(product *Product) error {
+	return p.db.WithContext(p.ctx).Model(&Product{}).Create(product).Error
+}
+
+func (p ProductMutation) Delete(productId int) error {
+	return p.db.WithContext(p.ctx).Model(&Product{}).Select(clause.Associations).Delete(&Product{Base: Base{ID: productId}}).Error
+}
+
+func (p ProductMutation) Update(product *Product) error {
+	return p.db.WithContext(p.ctx).Model(&Product{}).Where("id = ?", product.Base.ID).Session(&gorm.Session{FullSaveAssociations: true}).Updates(product).Error
+}
+
+func NewProductMutation(ctx context.Context, db *gorm.DB) *ProductMutation {
+	return &ProductMutation{
+		ctx: ctx,
+		db:  db,
+	}
 }
