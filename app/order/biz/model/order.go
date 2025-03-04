@@ -71,3 +71,7 @@ func GetPendingOrders(ctx context.Context, db *gorm.DB) ([]*Order, error) {
 	err := db.WithContext(ctx).Model(&Order{}).Where("order_state = ? AND created_at < ?", OrderStatePlaced, time.Now().Add(-30*time.Minute)).Find(&orders).Error
 	return orders, err
 }
+
+func UpdateOrder(ctx context.Context, db *gorm.DB, order Order) error {
+	return db.WithContext(ctx).Model(&Order{}).Where("order_id = ?", order.OrderId).Updates(&order).Error
+}

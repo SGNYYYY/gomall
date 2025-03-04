@@ -43,3 +43,10 @@ func (s *OrderServiceImpl) GetOrder(ctx context.Context, req *order.GetOrderReq)
 
 	return resp, err
 }
+
+// UpdateOrder implements the OrderServiceImpl interface.
+func (s *OrderServiceImpl) UpdateOrder(ctx context.Context, req *order.UpdateOrderReq) (resp *order.UpdateOrderResp, err error) {
+	resp, err = service.NewUpdateOrderService(ctx).Run(req)
+
+	return resp, err
+}

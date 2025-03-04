@@ -5,37 +5,26 @@ import (
 	"testing"
 
 	"github.com/SGNYYYY/gomall/app/order/biz/dal/mysql"
-	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart"
 	order "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/order"
 	"github.com/joho/godotenv"
 )
 
-func TestPlaceOrder_Run(t *testing.T) {
+func TestUpdateOrder_Run(t *testing.T) {
 	_ = godotenv.Load("../../.env")
 	mysql.Init()
 	ctx := context.Background()
-	s := NewPlaceOrderService(ctx)
+	s := NewUpdateOrderService(ctx)
 	// init req and assert value
 
-	req := &order.PlaceOrderReq{
-		UserId:       1,
+	req := &order.UpdateOrderReq{
+		OrderId:      "65a00156-f5d4-11ef-a7dc-4a2bf72c5fbe",
 		UserCurrency: "CNY",
 		Address: &order.Address{
-			StreetAddress: "和平路",
+			StreetAddress: "新港东路",
+			State:         "广东省",
+			City:          "广州市",
 			Country:       "中国",
-			State:         "福建省",
-			City:          "龙岩市",
 			ZipCode:       364000,
-		},
-		Email: "sgny@demo.com",
-		OrderItems: []*order.OrderItem{
-			{
-				Item: &cart.CartItem{
-					ProductId: 1,
-					Quantity:  1,
-				},
-				Cost: 5,
-			},
 		},
 	}
 	resp, err := s.Run(req)
