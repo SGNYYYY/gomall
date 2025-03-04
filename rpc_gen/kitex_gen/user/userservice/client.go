@@ -13,6 +13,14 @@ import (
 type Client interface {
 	Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
 	Login(ctx context.Context, Req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error)
+	DeleteUser(ctx context.Context, Req *user.DeleteUserReq, callOptions ...callopt.Option) (r *user.DeleteUserResp, err error)
+	UpdatePassword(ctx context.Context, Req *user.UpdatePasswordReq, callOptions ...callopt.Option) (r *user.UpdatePasswordResp, err error)
+	AdminUpdatePassword(ctx context.Context, Req *user.AdminUpdatePasswordReq, callOptions ...callopt.Option) (r *user.AdminUpdatePasswordResp, err error)
+	AdminUpdateRole(ctx context.Context, Req *user.AdminUpdateRoleReq, callOptions ...callopt.Option) (r *user.AdminUpdateRoleResp, err error)
+	Activate(ctx context.Context, Req *user.ActivateUserReq, callOptions ...callopt.Option) (r *user.ActivateUserResp, err error)
+	Deactivate(ctx context.Context, Req *user.DeactivateUserReq, callOptions ...callopt.Option) (r *user.DeactivateUserResp, err error)
+	GetUserInfo(ctx context.Context, Req *user.GetUserInfoReq, callOptions ...callopt.Option) (r *user.GetUserInfoResp, err error)
+	GetUsers(ctx context.Context, Req *user.GetUsersReq, callOptions ...callopt.Option) (r *user.GetUsersResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +60,44 @@ func (p *kUserServiceClient) Register(ctx context.Context, Req *user.RegisterReq
 func (p *kUserServiceClient) Login(ctx context.Context, Req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Login(ctx, Req)
+}
+
+func (p *kUserServiceClient) DeleteUser(ctx context.Context, Req *user.DeleteUserReq, callOptions ...callopt.Option) (r *user.DeleteUserResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteUser(ctx, Req)
+}
+
+func (p *kUserServiceClient) UpdatePassword(ctx context.Context, Req *user.UpdatePasswordReq, callOptions ...callopt.Option) (r *user.UpdatePasswordResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UpdatePassword(ctx, Req)
+}
+
+func (p *kUserServiceClient) AdminUpdatePassword(ctx context.Context, Req *user.AdminUpdatePasswordReq, callOptions ...callopt.Option) (r *user.AdminUpdatePasswordResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.AdminUpdatePassword(ctx, Req)
+}
+
+func (p *kUserServiceClient) AdminUpdateRole(ctx context.Context, Req *user.AdminUpdateRoleReq, callOptions ...callopt.Option) (r *user.AdminUpdateRoleResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.AdminUpdateRole(ctx, Req)
+}
+
+func (p *kUserServiceClient) Activate(ctx context.Context, Req *user.ActivateUserReq, callOptions ...callopt.Option) (r *user.ActivateUserResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Activate(ctx, Req)
+}
+
+func (p *kUserServiceClient) Deactivate(ctx context.Context, Req *user.DeactivateUserReq, callOptions ...callopt.Option) (r *user.DeactivateUserResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Deactivate(ctx, Req)
+}
+
+func (p *kUserServiceClient) GetUserInfo(ctx context.Context, Req *user.GetUserInfoReq, callOptions ...callopt.Option) (r *user.GetUserInfoResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetUserInfo(ctx, Req)
+}
+
+func (p *kUserServiceClient) GetUsers(ctx context.Context, Req *user.GetUsersReq, callOptions ...callopt.Option) (r *user.GetUsersResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetUsers(ctx, Req)
 }

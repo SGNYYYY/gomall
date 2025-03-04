@@ -7,6 +7,14 @@ option go_package="/user";
 service UserService {
     rpc Register(RegisterReq) returns (RegisterResp) {}
     rpc Login(LoginReq) returns (LoginResp) {}
+    rpc DeleteUser(DeleteUserReq) returns (DeleteUserResp) {}
+    rpc UpdatePassword(UpdatePasswordReq) returns (UpdatePasswordResp) {}
+    rpc AdminUpdatePassword(AdminUpdatePasswordReq) returns(AdminUpdatePasswordResp) {}
+    rpc AdminUpdateRole(AdminUpdateRoleReq) returns (AdminUpdateRoleResp) {}
+    rpc Activate(ActivateUserReq) returns(ActivateUserResp) {}
+    rpc Deactivate(DeactivateUserReq) returns(DeactivateUserResp) {}
+    rpc GetUserInfo(GetUserInfoReq) returns (GetUserInfoResp) {}
+    rpc GetUsers(GetUsersReq) returns (GetUsersResp) {}
 }
 
 message RegisterReq {
@@ -28,4 +36,82 @@ message LoginReq {
 message LoginResp {
     int32 user_id = 1;
     string role = 2;
+}
+
+message DeleteUserReq {
+    string current_user_role = 1;
+    int32 user_id = 2;
+}
+
+message DeleteUserResp {
+}
+
+message UpdatePasswordReq{
+    int32 user_id=1;
+    string old_password = 2;
+    string password = 3;
+}
+
+message UpdatePasswordResp{
+
+}
+
+message AdminUpdatePasswordReq{
+    string current_user_role = 1;
+    int32 user_id = 2;
+    string password = 3;
+}
+
+message AdminUpdatePasswordResp{
+
+}
+
+message AdminUpdateRoleReq{
+    string current_user_role = 1;
+    int32 user_id = 2;
+    string role = 3;
+}
+
+message AdminUpdateRoleResp{
+
+}
+
+message ActivateUserReq{
+    string current_user_role = 1;
+    int32 user_id = 2;
+}
+
+message ActivateUserResp{
+}
+
+message DeactivateUserReq{
+    string current_user_role = 1;
+    int32 user_id = 2;
+}
+
+message DeactivateUserResp{
+}
+
+message GetUserInfoReq{
+    int32 user_id = 1;
+}
+
+message GetUserInfoResp{
+    string email = 2;
+}
+
+message User{
+    string email = 1;
+    string role = 2;
+    int32 created_at = 3;
+    int32 updated_at = 4;
+    string status = 5;
+}
+
+message GetUsersReq{
+    string current_user_role = 1;
+}
+
+message GetUsersResp{
+    repeated User users = 1;
 }

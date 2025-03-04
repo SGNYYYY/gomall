@@ -38,6 +38,7 @@ func GlobalAuth() app.HandlerFunc {
 			return
 		}
 		ctx = context.WithValue(ctx, frontendUtils.UserIdKey, authResp.UserId)
+		ctx = context.WithValue(ctx, frontendUtils.UserRoleKey, authResp.Role)
 		c.Next(ctx)
 	}
 }
@@ -95,6 +96,7 @@ func Auth() app.HandlerFunc {
 			return
 		}
 		ctx = context.WithValue(ctx, frontendUtils.UserIdKey, authResp.UserId)
+		ctx = context.WithValue(ctx, frontendUtils.UserRoleKey, authResp.Role)
 		c.Next(ctx)
 	}
 }

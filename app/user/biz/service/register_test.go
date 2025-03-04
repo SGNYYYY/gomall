@@ -10,8 +10,7 @@ import (
 )
 
 func TestRegister_Run(t *testing.T) {
-	godotenv.Load("../../.env")
-
+	_ = godotenv.Load("../../.env")
 	mysql.Init()
 
 	ctx := context.Background()
@@ -19,7 +18,7 @@ func TestRegister_Run(t *testing.T) {
 	// init req and assert value
 
 	req := &user.RegisterReq{
-		Email:           "demo@demo.com",
+		Email:           "sgny@demo.com",
 		Password:        "123456",
 		ConfirmPassword: "123456",
 	}
@@ -27,5 +26,30 @@ func TestRegister_Run(t *testing.T) {
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
 
-	// todo: edit your unit test
+	req = &user.RegisterReq{
+		Email:           "sgny@demo.com",
+		Password:        "123456",
+		ConfirmPassword: "123321",
+	}
+	resp, err = s.Run(req)
+	t.Logf("err: %v", err)
+	t.Logf("resp: %v", resp)
+
+	req = &user.RegisterReq{
+		Email:           "sgny@demo.com",
+		Password:        "123456",
+		ConfirmPassword: "123456",
+	}
+	resp, err = s.Run(req)
+	t.Logf("err: %v", err)
+	t.Logf("resp: %v", resp)
+
+	req = &user.RegisterReq{
+		Email:           "sgny2@demo.com",
+		Password:        "123456",
+		ConfirmPassword: "123456",
+	}
+	resp, err = s.Run(req)
+	t.Logf("err: %v", err)
+	t.Logf("resp: %v", resp)
 }

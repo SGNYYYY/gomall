@@ -29,6 +29,62 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"DeleteUser": kitex.NewMethodInfo(
+		deleteUserHandler,
+		newDeleteUserArgs,
+		newDeleteUserResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"UpdatePassword": kitex.NewMethodInfo(
+		updatePasswordHandler,
+		newUpdatePasswordArgs,
+		newUpdatePasswordResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"AdminUpdatePassword": kitex.NewMethodInfo(
+		adminUpdatePasswordHandler,
+		newAdminUpdatePasswordArgs,
+		newAdminUpdatePasswordResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"AdminUpdateRole": kitex.NewMethodInfo(
+		adminUpdateRoleHandler,
+		newAdminUpdateRoleArgs,
+		newAdminUpdateRoleResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"Activate": kitex.NewMethodInfo(
+		activateHandler,
+		newActivateArgs,
+		newActivateResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"Deactivate": kitex.NewMethodInfo(
+		deactivateHandler,
+		newDeactivateArgs,
+		newDeactivateResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"GetUserInfo": kitex.NewMethodInfo(
+		getUserInfoHandler,
+		newGetUserInfoArgs,
+		newGetUserInfoResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"GetUsers": kitex.NewMethodInfo(
+		getUsersHandler,
+		newGetUsersArgs,
+		newGetUsersResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -401,6 +457,1230 @@ func (p *LoginResult) GetResult() interface{} {
 	return p.Success
 }
 
+func deleteUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.DeleteUserReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).DeleteUser(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *DeleteUserArgs:
+		success, err := handler.(user.UserService).DeleteUser(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*DeleteUserResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newDeleteUserArgs() interface{} {
+	return &DeleteUserArgs{}
+}
+
+func newDeleteUserResult() interface{} {
+	return &DeleteUserResult{}
+}
+
+type DeleteUserArgs struct {
+	Req *user.DeleteUserReq
+}
+
+func (p *DeleteUserArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.DeleteUserReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *DeleteUserArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *DeleteUserArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *DeleteUserArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *DeleteUserArgs) Unmarshal(in []byte) error {
+	msg := new(user.DeleteUserReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var DeleteUserArgs_Req_DEFAULT *user.DeleteUserReq
+
+func (p *DeleteUserArgs) GetReq() *user.DeleteUserReq {
+	if !p.IsSetReq() {
+		return DeleteUserArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *DeleteUserArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *DeleteUserArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type DeleteUserResult struct {
+	Success *user.DeleteUserResp
+}
+
+var DeleteUserResult_Success_DEFAULT *user.DeleteUserResp
+
+func (p *DeleteUserResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.DeleteUserResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *DeleteUserResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *DeleteUserResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *DeleteUserResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *DeleteUserResult) Unmarshal(in []byte) error {
+	msg := new(user.DeleteUserResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *DeleteUserResult) GetSuccess() *user.DeleteUserResp {
+	if !p.IsSetSuccess() {
+		return DeleteUserResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *DeleteUserResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.DeleteUserResp)
+}
+
+func (p *DeleteUserResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *DeleteUserResult) GetResult() interface{} {
+	return p.Success
+}
+
+func updatePasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.UpdatePasswordReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).UpdatePassword(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *UpdatePasswordArgs:
+		success, err := handler.(user.UserService).UpdatePassword(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*UpdatePasswordResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newUpdatePasswordArgs() interface{} {
+	return &UpdatePasswordArgs{}
+}
+
+func newUpdatePasswordResult() interface{} {
+	return &UpdatePasswordResult{}
+}
+
+type UpdatePasswordArgs struct {
+	Req *user.UpdatePasswordReq
+}
+
+func (p *UpdatePasswordArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.UpdatePasswordReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *UpdatePasswordArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *UpdatePasswordArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *UpdatePasswordArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *UpdatePasswordArgs) Unmarshal(in []byte) error {
+	msg := new(user.UpdatePasswordReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var UpdatePasswordArgs_Req_DEFAULT *user.UpdatePasswordReq
+
+func (p *UpdatePasswordArgs) GetReq() *user.UpdatePasswordReq {
+	if !p.IsSetReq() {
+		return UpdatePasswordArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *UpdatePasswordArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *UpdatePasswordArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type UpdatePasswordResult struct {
+	Success *user.UpdatePasswordResp
+}
+
+var UpdatePasswordResult_Success_DEFAULT *user.UpdatePasswordResp
+
+func (p *UpdatePasswordResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.UpdatePasswordResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *UpdatePasswordResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *UpdatePasswordResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *UpdatePasswordResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *UpdatePasswordResult) Unmarshal(in []byte) error {
+	msg := new(user.UpdatePasswordResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *UpdatePasswordResult) GetSuccess() *user.UpdatePasswordResp {
+	if !p.IsSetSuccess() {
+		return UpdatePasswordResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *UpdatePasswordResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.UpdatePasswordResp)
+}
+
+func (p *UpdatePasswordResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *UpdatePasswordResult) GetResult() interface{} {
+	return p.Success
+}
+
+func adminUpdatePasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.AdminUpdatePasswordReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).AdminUpdatePassword(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *AdminUpdatePasswordArgs:
+		success, err := handler.(user.UserService).AdminUpdatePassword(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*AdminUpdatePasswordResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newAdminUpdatePasswordArgs() interface{} {
+	return &AdminUpdatePasswordArgs{}
+}
+
+func newAdminUpdatePasswordResult() interface{} {
+	return &AdminUpdatePasswordResult{}
+}
+
+type AdminUpdatePasswordArgs struct {
+	Req *user.AdminUpdatePasswordReq
+}
+
+func (p *AdminUpdatePasswordArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.AdminUpdatePasswordReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *AdminUpdatePasswordArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *AdminUpdatePasswordArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *AdminUpdatePasswordArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *AdminUpdatePasswordArgs) Unmarshal(in []byte) error {
+	msg := new(user.AdminUpdatePasswordReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var AdminUpdatePasswordArgs_Req_DEFAULT *user.AdminUpdatePasswordReq
+
+func (p *AdminUpdatePasswordArgs) GetReq() *user.AdminUpdatePasswordReq {
+	if !p.IsSetReq() {
+		return AdminUpdatePasswordArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *AdminUpdatePasswordArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *AdminUpdatePasswordArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type AdminUpdatePasswordResult struct {
+	Success *user.AdminUpdatePasswordResp
+}
+
+var AdminUpdatePasswordResult_Success_DEFAULT *user.AdminUpdatePasswordResp
+
+func (p *AdminUpdatePasswordResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.AdminUpdatePasswordResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *AdminUpdatePasswordResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *AdminUpdatePasswordResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *AdminUpdatePasswordResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *AdminUpdatePasswordResult) Unmarshal(in []byte) error {
+	msg := new(user.AdminUpdatePasswordResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *AdminUpdatePasswordResult) GetSuccess() *user.AdminUpdatePasswordResp {
+	if !p.IsSetSuccess() {
+		return AdminUpdatePasswordResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *AdminUpdatePasswordResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.AdminUpdatePasswordResp)
+}
+
+func (p *AdminUpdatePasswordResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *AdminUpdatePasswordResult) GetResult() interface{} {
+	return p.Success
+}
+
+func adminUpdateRoleHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.AdminUpdateRoleReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).AdminUpdateRole(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *AdminUpdateRoleArgs:
+		success, err := handler.(user.UserService).AdminUpdateRole(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*AdminUpdateRoleResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newAdminUpdateRoleArgs() interface{} {
+	return &AdminUpdateRoleArgs{}
+}
+
+func newAdminUpdateRoleResult() interface{} {
+	return &AdminUpdateRoleResult{}
+}
+
+type AdminUpdateRoleArgs struct {
+	Req *user.AdminUpdateRoleReq
+}
+
+func (p *AdminUpdateRoleArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.AdminUpdateRoleReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *AdminUpdateRoleArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *AdminUpdateRoleArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *AdminUpdateRoleArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *AdminUpdateRoleArgs) Unmarshal(in []byte) error {
+	msg := new(user.AdminUpdateRoleReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var AdminUpdateRoleArgs_Req_DEFAULT *user.AdminUpdateRoleReq
+
+func (p *AdminUpdateRoleArgs) GetReq() *user.AdminUpdateRoleReq {
+	if !p.IsSetReq() {
+		return AdminUpdateRoleArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *AdminUpdateRoleArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *AdminUpdateRoleArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type AdminUpdateRoleResult struct {
+	Success *user.AdminUpdateRoleResp
+}
+
+var AdminUpdateRoleResult_Success_DEFAULT *user.AdminUpdateRoleResp
+
+func (p *AdminUpdateRoleResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.AdminUpdateRoleResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *AdminUpdateRoleResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *AdminUpdateRoleResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *AdminUpdateRoleResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *AdminUpdateRoleResult) Unmarshal(in []byte) error {
+	msg := new(user.AdminUpdateRoleResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *AdminUpdateRoleResult) GetSuccess() *user.AdminUpdateRoleResp {
+	if !p.IsSetSuccess() {
+		return AdminUpdateRoleResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *AdminUpdateRoleResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.AdminUpdateRoleResp)
+}
+
+func (p *AdminUpdateRoleResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *AdminUpdateRoleResult) GetResult() interface{} {
+	return p.Success
+}
+
+func activateHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.ActivateUserReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).Activate(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *ActivateArgs:
+		success, err := handler.(user.UserService).Activate(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*ActivateResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newActivateArgs() interface{} {
+	return &ActivateArgs{}
+}
+
+func newActivateResult() interface{} {
+	return &ActivateResult{}
+}
+
+type ActivateArgs struct {
+	Req *user.ActivateUserReq
+}
+
+func (p *ActivateArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.ActivateUserReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *ActivateArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *ActivateArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *ActivateArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *ActivateArgs) Unmarshal(in []byte) error {
+	msg := new(user.ActivateUserReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var ActivateArgs_Req_DEFAULT *user.ActivateUserReq
+
+func (p *ActivateArgs) GetReq() *user.ActivateUserReq {
+	if !p.IsSetReq() {
+		return ActivateArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *ActivateArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *ActivateArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type ActivateResult struct {
+	Success *user.ActivateUserResp
+}
+
+var ActivateResult_Success_DEFAULT *user.ActivateUserResp
+
+func (p *ActivateResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.ActivateUserResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *ActivateResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *ActivateResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *ActivateResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *ActivateResult) Unmarshal(in []byte) error {
+	msg := new(user.ActivateUserResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *ActivateResult) GetSuccess() *user.ActivateUserResp {
+	if !p.IsSetSuccess() {
+		return ActivateResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *ActivateResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.ActivateUserResp)
+}
+
+func (p *ActivateResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *ActivateResult) GetResult() interface{} {
+	return p.Success
+}
+
+func deactivateHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.DeactivateUserReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).Deactivate(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *DeactivateArgs:
+		success, err := handler.(user.UserService).Deactivate(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*DeactivateResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newDeactivateArgs() interface{} {
+	return &DeactivateArgs{}
+}
+
+func newDeactivateResult() interface{} {
+	return &DeactivateResult{}
+}
+
+type DeactivateArgs struct {
+	Req *user.DeactivateUserReq
+}
+
+func (p *DeactivateArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.DeactivateUserReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *DeactivateArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *DeactivateArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *DeactivateArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *DeactivateArgs) Unmarshal(in []byte) error {
+	msg := new(user.DeactivateUserReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var DeactivateArgs_Req_DEFAULT *user.DeactivateUserReq
+
+func (p *DeactivateArgs) GetReq() *user.DeactivateUserReq {
+	if !p.IsSetReq() {
+		return DeactivateArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *DeactivateArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *DeactivateArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type DeactivateResult struct {
+	Success *user.DeactivateUserResp
+}
+
+var DeactivateResult_Success_DEFAULT *user.DeactivateUserResp
+
+func (p *DeactivateResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.DeactivateUserResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *DeactivateResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *DeactivateResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *DeactivateResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *DeactivateResult) Unmarshal(in []byte) error {
+	msg := new(user.DeactivateUserResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *DeactivateResult) GetSuccess() *user.DeactivateUserResp {
+	if !p.IsSetSuccess() {
+		return DeactivateResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *DeactivateResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.DeactivateUserResp)
+}
+
+func (p *DeactivateResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *DeactivateResult) GetResult() interface{} {
+	return p.Success
+}
+
+func getUserInfoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.GetUserInfoReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).GetUserInfo(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GetUserInfoArgs:
+		success, err := handler.(user.UserService).GetUserInfo(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetUserInfoResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGetUserInfoArgs() interface{} {
+	return &GetUserInfoArgs{}
+}
+
+func newGetUserInfoResult() interface{} {
+	return &GetUserInfoResult{}
+}
+
+type GetUserInfoArgs struct {
+	Req *user.GetUserInfoReq
+}
+
+func (p *GetUserInfoArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.GetUserInfoReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetUserInfoArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetUserInfoArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetUserInfoArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetUserInfoArgs) Unmarshal(in []byte) error {
+	msg := new(user.GetUserInfoReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetUserInfoArgs_Req_DEFAULT *user.GetUserInfoReq
+
+func (p *GetUserInfoArgs) GetReq() *user.GetUserInfoReq {
+	if !p.IsSetReq() {
+		return GetUserInfoArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetUserInfoArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetUserInfoArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetUserInfoResult struct {
+	Success *user.GetUserInfoResp
+}
+
+var GetUserInfoResult_Success_DEFAULT *user.GetUserInfoResp
+
+func (p *GetUserInfoResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.GetUserInfoResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetUserInfoResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetUserInfoResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetUserInfoResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetUserInfoResult) Unmarshal(in []byte) error {
+	msg := new(user.GetUserInfoResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetUserInfoResult) GetSuccess() *user.GetUserInfoResp {
+	if !p.IsSetSuccess() {
+		return GetUserInfoResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetUserInfoResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.GetUserInfoResp)
+}
+
+func (p *GetUserInfoResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetUserInfoResult) GetResult() interface{} {
+	return p.Success
+}
+
+func getUsersHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.GetUsersReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.UserService).GetUsers(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GetUsersArgs:
+		success, err := handler.(user.UserService).GetUsers(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetUsersResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGetUsersArgs() interface{} {
+	return &GetUsersArgs{}
+}
+
+func newGetUsersResult() interface{} {
+	return &GetUsersResult{}
+}
+
+type GetUsersArgs struct {
+	Req *user.GetUsersReq
+}
+
+func (p *GetUsersArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.GetUsersReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetUsersArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetUsersArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetUsersArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetUsersArgs) Unmarshal(in []byte) error {
+	msg := new(user.GetUsersReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetUsersArgs_Req_DEFAULT *user.GetUsersReq
+
+func (p *GetUsersArgs) GetReq() *user.GetUsersReq {
+	if !p.IsSetReq() {
+		return GetUsersArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetUsersArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetUsersArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetUsersResult struct {
+	Success *user.GetUsersResp
+}
+
+var GetUsersResult_Success_DEFAULT *user.GetUsersResp
+
+func (p *GetUsersResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.GetUsersResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetUsersResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetUsersResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetUsersResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetUsersResult) Unmarshal(in []byte) error {
+	msg := new(user.GetUsersResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetUsersResult) GetSuccess() *user.GetUsersResp {
+	if !p.IsSetSuccess() {
+		return GetUsersResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetUsersResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.GetUsersResp)
+}
+
+func (p *GetUsersResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetUsersResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -426,6 +1706,86 @@ func (p *kClient) Login(ctx context.Context, Req *user.LoginReq) (r *user.LoginR
 	_args.Req = Req
 	var _result LoginResult
 	if err = p.c.Call(ctx, "Login", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeleteUser(ctx context.Context, Req *user.DeleteUserReq) (r *user.DeleteUserResp, err error) {
+	var _args DeleteUserArgs
+	_args.Req = Req
+	var _result DeleteUserResult
+	if err = p.c.Call(ctx, "DeleteUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) UpdatePassword(ctx context.Context, Req *user.UpdatePasswordReq) (r *user.UpdatePasswordResp, err error) {
+	var _args UpdatePasswordArgs
+	_args.Req = Req
+	var _result UpdatePasswordResult
+	if err = p.c.Call(ctx, "UpdatePassword", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) AdminUpdatePassword(ctx context.Context, Req *user.AdminUpdatePasswordReq) (r *user.AdminUpdatePasswordResp, err error) {
+	var _args AdminUpdatePasswordArgs
+	_args.Req = Req
+	var _result AdminUpdatePasswordResult
+	if err = p.c.Call(ctx, "AdminUpdatePassword", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) AdminUpdateRole(ctx context.Context, Req *user.AdminUpdateRoleReq) (r *user.AdminUpdateRoleResp, err error) {
+	var _args AdminUpdateRoleArgs
+	_args.Req = Req
+	var _result AdminUpdateRoleResult
+	if err = p.c.Call(ctx, "AdminUpdateRole", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Activate(ctx context.Context, Req *user.ActivateUserReq) (r *user.ActivateUserResp, err error) {
+	var _args ActivateArgs
+	_args.Req = Req
+	var _result ActivateResult
+	if err = p.c.Call(ctx, "Activate", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Deactivate(ctx context.Context, Req *user.DeactivateUserReq) (r *user.DeactivateUserResp, err error) {
+	var _args DeactivateArgs
+	_args.Req = Req
+	var _result DeactivateResult
+	if err = p.c.Call(ctx, "Deactivate", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetUserInfo(ctx context.Context, Req *user.GetUserInfoReq) (r *user.GetUserInfoResp, err error) {
+	var _args GetUserInfoArgs
+	_args.Req = Req
+	var _result GetUserInfoResult
+	if err = p.c.Call(ctx, "GetUserInfo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetUsers(ctx context.Context, Req *user.GetUsersReq) (r *user.GetUsersResp, err error) {
+	var _args GetUsersArgs
+	_args.Req = Req
+	var _result GetUsersResult
+	if err = p.c.Call(ctx, "GetUsers", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

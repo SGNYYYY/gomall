@@ -34,10 +34,12 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 	newUser := &model.User{
 		Email:          req.Email,
 		PasswordHashed: string(passwordHashed),
+		Role:           model.RoleUser,
+		Status:         model.Enabled,
 	}
-	err = model.Create(mysql.DB, newUser)
+	err = model.Create(mysql.DB, s.ctx, newUser)
 	if err != nil {
 		return nil, err
 	}
-	return &user.RegisterResp{UserId: int32(newUser.ID), Role: newUser.Role}, nil
+	return &user.RegisterResp{UserId: int32(newUser.ID), Role: string(newUser.Role)}, nil
 }

@@ -23,17 +23,23 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	if req.Email == "" || req.Password == "" {
 		return nil, errors.New("用户名或密码为空")
 	}
-	row, err := model.GetByEmail(mysql.DB, req.Email)
+	row, err := model.GetByEmail(mysql.DB, s.ctx, req.Email)
 	if err != nil {
 		return nil, err
+	}
+	if row == nil {
+		return nil, errors.New("账号不存在")
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(row.PasswordHashed), []byte(req.Password))
 	if err != nil {
 		return nil, err
 	}
+	if row.Status == model.Disabled {
+		return nil, errors.New("账号已禁用")
+	}
 	resp = &user.LoginResp{
 		UserId: int32(row.ID),
-		Role:   row.Role,
+		Role:   string(row.Role),
 	}
 	return resp, nil
 }
