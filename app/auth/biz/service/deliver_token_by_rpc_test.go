@@ -14,9 +14,10 @@ func TestDeliverTokenByRPC_Run(t *testing.T) {
 	s := NewDeliverTokenByRPCService(ctx)
 	// init req and assert value
 
+	// 生成令牌
 	req := &auth.DeliverTokenReq{
 		UserId: 1,
-		Role:   "user",
+		Role:   "admin",
 	}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)

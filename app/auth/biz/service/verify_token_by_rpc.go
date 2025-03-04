@@ -23,10 +23,10 @@ func (s *VerifyTokenByRPCService) Run(req *auth.VerifyTokenReq) (resp *auth.Veri
 	}
 	if jwtResp.Token == "" {
 		return &auth.VerifyResp{
-			UserId: jwtResp.UserId,
-			Role:   jwtResp.Role,
-			Res:    false,
-			Token:  jwtResp.Token,
+			// UserId: jwtResp.UserId,
+			// Role:   jwtResp.Role,
+			Res:   false,
+			Token: "",
 		}, nil
 	}
 	return &auth.VerifyResp{
