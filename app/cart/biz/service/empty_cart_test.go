@@ -4,10 +4,15 @@ import (
 	"context"
 	"testing"
 
+	"github.com/SGNYYYY/gomall/app/cart/biz/dal/mysql"
 	cart "github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/cart"
+	"github.com/joho/godotenv"
 )
 
 func TestEmptyCart_Run(t *testing.T) {
+	_ = godotenv.Load("../../.env")
+
+	mysql.Init()
 	ctx := context.Background()
 	s := NewEmptyCartService(ctx)
 	// init req and assert value
