@@ -109,3 +109,24 @@
 | TransactionId | | 交易id||
 | Amount | |总金额|  |
 | PayAt | | 支付时间 | |
+
+## 项目代码结构
+```
+. 
+├── app
+│   ├── ai          AI大模型服务
+│   ├── auth        认证服务
+│   ├── cart        购物车服务
+│   ├── checkout    结算服务
+│   ├── email       邮件服务
+│   ├── frontend    前端
+│   ├── order       订单服务
+│   ├── payment     支付服务
+│   ├── product     商品服务
+│   └── user        用户服务
+├── common           公共函数和工具类
+├── db               数据库初始化文件
+├── deploy           接口定义文件
+├── idl              接口定义文件
+└── rpc_gen
+```
