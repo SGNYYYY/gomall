@@ -109,7 +109,7 @@ type CheckoutReq struct {
 	Firstname string   `protobuf:"bytes,2,opt,name=firstname,proto3" json:"firstname,omitempty"`
 	Lastname  string   `protobuf:"bytes,3,opt,name=lastname,proto3" json:"lastname,omitempty"`
 	Email     string   `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`
-	Address   *Address `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"` // payment.CreditCardInfo credit_card = 6;
+	Address   *Address `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"`
 }
 
 func (x *CheckoutReq) Reset() {

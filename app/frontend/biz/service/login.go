@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	auth "github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/auth"
 	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
@@ -41,7 +40,6 @@ func (h *LoginService) Run(req *auth.LoginReq) (resp string, err error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("token:", stringToken.Token)
 	session := sessions.Default(h.RequestContext)
 	session.Set("token", stringToken.Token)
 	err = session.Save()
