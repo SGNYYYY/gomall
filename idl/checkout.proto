@@ -26,4 +26,5 @@ message CheckoutReq {
 
 message CheckoutResp {
   string order_id = 1;
+  float amount = 2;
 }

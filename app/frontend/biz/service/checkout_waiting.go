@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/checkout"
 	"github.com/SGNYYYY/gomall/app/frontend/infra/rpc"
@@ -46,6 +47,7 @@ func (h *CheckoutWaitingService) Run(req *checkout.CheckoutReq) (resp map[string
 	}
 	return utils.H{
 		"title":    "Payment",
-		"redirect": "/payment?orderId=" + r.OrderId,
+		"order_id": r.OrderId,
+		"total":    strconv.FormatFloat(float64(r.Amount), 'f', 2, 64),
 	}, nil
 }

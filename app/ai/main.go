@@ -8,9 +8,9 @@ import (
 	"github.com/SGNYYYY/gomall/app/ai/conf"
 	"github.com/SGNYYYY/gomall/app/ai/infra/rpc"
 	"github.com/SGNYYYY/gomall/common/mtl"
+	"github.com/SGNYYYY/gomall/common/serversuite"
 	"github.com/SGNYYYY/gomall/rpc_gen/kitex_gen/ai/aiservice"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
@@ -47,9 +47,9 @@ func kitexInit() (opts []server.Option) {
 	}
 	opts = append(opts, server.WithServiceAddr(addr))
 
-	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
 	}))
 
 	// klog

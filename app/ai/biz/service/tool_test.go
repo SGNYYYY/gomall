@@ -19,20 +19,20 @@ func TestTool_Run(t *testing.T) {
 	var resp *ai.ToolResp
 	var err error
 	req = &ai.ToolReq{
-		UserId:  1,
+		UserId:  10,
 		Content: "查找我的订单",
 	}
 	resp, err = s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
 
-	// req = &ai.ToolReq{
-	// 	UserId:  1,
-	// 	Content: "下单购物车里的商品,我的地址在中国广东省广州市小谷围街道,邮政编码100000",
-	// }
-	// resp, err = s.Run(req)
-	// t.Logf("err: %v", err)
-	// t.Logf("resp: %v", resp)
+	req = &ai.ToolReq{
+		UserId:  10,
+		Content: "下单购物车里的商品,我的地址在中国广东省广州市小谷围街道,邮政编码100000",
+	}
+	resp, err = s.Run(req)
+	t.Logf("err: %v", err)
+	t.Logf("resp: %v", resp)
 
 	// todo: edit your unit test
 }

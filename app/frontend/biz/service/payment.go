@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/SGNYYYY/gomall/app/frontend/hertz_gen/frontend/payment"
@@ -72,6 +73,6 @@ func (h *PaymentService) Run(req *payment.PaymentPageReq) (resp map[string]any, 
 		"order_id": order.OrderId,
 		"order":    order,
 		"items":    order.Items,
-		"total":    total,
+		"total":    strconv.FormatFloat(float64(total), 'f', 2, 64),
 	}, nil
 }

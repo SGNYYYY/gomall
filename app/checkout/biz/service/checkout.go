@@ -135,6 +135,7 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	// klog.Info(paymentResult)
 	resp = &checkout.CheckoutResp{
 		OrderId: orderId,
+		Amount:  total,
 		// TransactionId: paymentResult.TransactionId,
 	}
 	return resp, nil
